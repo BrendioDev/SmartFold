@@ -1,15 +1,23 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.11800222.smartfold</id>
+    <id>com.github.brandro.smartfold</id>
     <name>SmartFold</name>
     <vendor>11800222</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <actions>
+        <action id="UncleFoldingAction"
+                class="com.github.brandro.smartfold.actions.UncleFoldingAction"
+                text="UncleFold"
+                description="UncleFold">
+        </action>
+    </actions>
+
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.11800222.smartfold.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="com.github.11800222.smartfold.startup.MyProjectActivity" />
+        <lang.foldingBuilder language="JAVA" implementationClass="com.github.brandro.smartfold.OneLineCommentFoldingBuilder"/>
     </extensions>
+
 </idea-plugin>
