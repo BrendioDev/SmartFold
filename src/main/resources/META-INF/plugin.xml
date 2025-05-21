@@ -3,7 +3,7 @@
     <idea-version since-build="251"/>
     <id>com.github.brandro.smartfold</id>
     <name>SmartFold</name>
-    <vendor>11800222</vendor>
+    <vendor>BrendioDev</vendor>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
