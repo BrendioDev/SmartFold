@@ -1,23 +1,22 @@
-package com.github.brandro.smartfold;
+package com.github.brendio.smartfold;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.folding.FoldingBuilder;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
-import com.intellij.psi.JavaTokenType;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.brandro.smartfold.Utils.areOnAdjacentLines;
-
-public final class OneLineCommentFoldingBuilder implements FoldingBuilder {
+public abstract class AbstractFoldingBuilder implements FoldingBuilder {
 
     public static final String ONE_LINE_COMMENT_PREFIX = "/.";
+
+    protected abstract boolean isOneLineComment(PsiComment comment);
 
     @Override
     public FoldingDescriptor @NotNull [] buildFoldRegions(@NotNull ASTNode astNode, @NotNull Document document) {
@@ -29,21 +28,16 @@ public final class OneLineCommentFoldingBuilder implements FoldingBuilder {
             PsiComment current = (PsiComment) comments[i];
             PsiComment previous = i > 0 ? (PsiComment) comments[i - 1] : null;
             PsiComment next = i < comments.length - 1 ? (PsiComment) comments[i + 1] : null;
-            if (current.getTokenType() != JavaTokenType.END_OF_LINE_COMMENT) {
+            if (!isOneLineComment(current))
                 continue;
-            }
             if (previous != null &&
-                    previous.getTokenType() == JavaTokenType.END_OF_LINE_COMMENT &&
-                    areOnAdjacentLines(current, previous, astNode.getPsi().getProject())
-            ) {
+                    isOneLineComment(previous) &&
+                    areOnAdjacentLines(current, previous, astNode.getPsi().getProject()))
                 continue;
-            }
             if (next != null &&
-                    next.getTokenType() == JavaTokenType.END_OF_LINE_COMMENT &&
-                    areOnAdjacentLines(current, next, astNode.getPsi().getProject())
-            ) {
+                    isOneLineComment(previous) &&
+                    areOnAdjacentLines(current, next, astNode.getPsi().getProject()))
                 continue;
-            }
 
             descriptors.add(
                     new FoldingDescriptor(
@@ -54,6 +48,31 @@ public final class OneLineCommentFoldingBuilder implements FoldingBuilder {
         }
         return descriptors.toArray(FoldingDescriptor.EMPTY_ARRAY);
     }
+
+    public static boolean areOnAdjacentLines(PsiElement e1,
+                                             PsiElement e2,
+                                             Project project) {
+        PsiFile psiFile = e1.getContainingFile();
+        Document document = PsiDocumentManager.getInstance(project)
+                .getDocument(psiFile);
+        if (document == null) return false;
+        int line1 = document.getLineNumber(e1.getTextOffset());
+        int line2 = document.getLineNumber(e2.getTextOffset());
+
+        if (Math.abs(line1 - line2) == 1) {
+            return lineOffset(e1, document, line1) == lineOffset(e2, document, line2);
+        } else {
+            return false;
+        }
+    }
+
+    private static int lineOffset(PsiElement e, Document document, int line) {
+        int elementOffset = e.getTextRange().getStartOffset();
+        int lineStartOffset = document.getLineStartOffset(line);
+        return elementOffset - lineStartOffset;
+    }
+
+
 
     @Override
     public String getPlaceholderText(@NotNull ASTNode astNode) {

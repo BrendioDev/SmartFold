@@ -1,4 +1,4 @@
-package com.github.brandro.smartfold.actions;
+package com.github.brendio.smartfold;
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -9,7 +9,9 @@ import com.intellij.openapi.editor.FoldRegion;
 import com.intellij.openapi.editor.FoldingModel;
 import org.jetbrains.annotations.NotNull;
 
-import static com.github.brandro.smartfold.OneLineCommentFoldingBuilder.ONE_LINE_COMMENT_PREFIX;
+import java.util.Arrays;
+
+import static com.github.brendio.smartfold.fold.JavaFoldingBuilder.ONE_LINE_COMMENT_PREFIX;
 
 
 public class SmartFoldingAction extends AnAction {
@@ -23,23 +25,29 @@ public class SmartFoldingAction extends AnAction {
     public void actionPerformed(AnActionEvent event) {
         Editor editor = event.getData(CommonDataKeys.EDITOR);
         if (editor == null) return;
-
         FoldingModel foldingModel = editor.getFoldingModel();
 
         foldingModel.runBatchFoldingOperation(() -> {
             FoldRegion[] allRegions = foldingModel.getAllFoldRegions();
-
-            for (FoldRegion region : allRegions) {
-                String placeholderText = region.getPlaceholderText().trim();
-                if (placeholderText.startsWith("/*") ||
-                        placeholderText.startsWith("/**") ||
-                        placeholderText.startsWith("//") ||
-                        // one line comment built by OneLineCommentFoldingBuilder
-                        placeholderText.startsWith(ONE_LINE_COMMENT_PREFIX)) {
-                    region.setExpanded(false);
-                }
+            var comments = Arrays.stream(allRegions)
+                    .filter(region -> {
+                        String placeholderText = region.getPlaceholderText().trim();
+                        return isComment(placeholderText);
+                    }).toList();
+            // if all comments are un expand, expand all
+            boolean allNotExpand = comments.stream().allMatch(region -> !region.isExpanded());
+            for (FoldRegion region : comments) {
+                region.setExpanded(allNotExpand ? true : false);
             }
         });
+    }
+
+    private static boolean isComment(String placeholderText) {
+        return placeholderText.startsWith("/*") ||
+                placeholderText.startsWith("/**") ||
+                placeholderText.startsWith("//") ||
+                // one line comment built by OneLineCommentFoldingBuilder
+                placeholderText.startsWith(ONE_LINE_COMMENT_PREFIX);
     }
 
     @Override

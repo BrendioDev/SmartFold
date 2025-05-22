@@ -1,24 +1,27 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <idea-version since-build="251"/>
-    <id>com.github.brandro.smartfold</id>
+    <id>com.github.brendio.smartfold</id>
     <name>SmartFold</name>
     <vendor>BrendioDev</vendor>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
+    <depends optional="true" config-file="python-config.xml">com.intellij.modules.python</depends>
+
 
     <actions>
         <action id="SmartFoldingAction"
-                class="com.github.brandro.smartfold.actions.SmartFoldingAction"
-                text="SmartFold"
-                description="SmartFold">
+                class="com.github.brendio.smartfold.SmartFoldingAction"
+                text="Smart Fold"
+                description="Smart fold">
         </action>
     </actions>
 
 
     <extensions defaultExtensionNs="com.intellij">
-        <lang.foldingBuilder language="JAVA" implementationClass="com.github.brandro.smartfold.OneLineCommentFoldingBuilder"/>
+        <lang.foldingBuilder language="JAVA"
+                             implementationClass="com.github.brendio.smartfold.fold.JavaFoldingBuilder"/>
     </extensions>
 
 </idea-plugin>

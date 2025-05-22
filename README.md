@@ -1,5 +1,11 @@
 # SmartFold
 
+# Version Compatibility issue
+places to check:
+- platformVersion
+- platformPlugins
+
+
 <!-- Plugin description -->
 code folding plugin to extend the functionality of the built-in code folding in intellij
 

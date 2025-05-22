@@ -1,6 +1,0 @@
-<idea-plugin>
-    <extensions defaultExtensionNs="com.intellij">
-        <lang.foldingBuilder language="JAVA"
-                             implementationClass="com.github.gillesmoris.intellifold.foldingbuilders.java.JavaAggregateFoldingBuilder"/>
-    </extensions>
-</idea-plugin>

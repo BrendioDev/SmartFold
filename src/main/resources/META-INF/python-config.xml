@@ -1,0 +1,5 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <lang.foldingBuilder language="Python" implementationClass="com.github.brendio.smartfold.fold.PyFoldingBuilder"/>
+    </extensions>
+</idea-plugin>
