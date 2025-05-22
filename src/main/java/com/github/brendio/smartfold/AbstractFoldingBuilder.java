@@ -35,7 +35,7 @@ public abstract class AbstractFoldingBuilder implements FoldingBuilder {
                     areOnAdjacentLines(current, previous, astNode.getPsi().getProject()))
                 continue;
             if (next != null &&
-                    isOneLineComment(previous) &&
+                    isOneLineComment(next) &&
                     areOnAdjacentLines(current, next, astNode.getPsi().getProject()))
                 continue;
 

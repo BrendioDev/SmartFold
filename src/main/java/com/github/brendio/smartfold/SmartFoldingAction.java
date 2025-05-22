@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-import static com.github.brendio.smartfold.fold.JavaFoldingBuilder.ONE_LINE_COMMENT_PREFIX;
+import static com.github.brendio.smartfold.AbstractFoldingBuilder.ONE_LINE_COMMENT_PREFIX;
 
 
 public class SmartFoldingAction extends AnAction {
