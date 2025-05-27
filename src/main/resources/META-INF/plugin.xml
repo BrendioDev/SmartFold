@@ -18,8 +18,12 @@
         </action>
     </actions>
 
+    <resource-bundle>messages.SmartFoldBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="SmartFold Notification Group"
+                           displayType="BALLOON"
+                           key="smart.fold.notify"/>
         <lang.foldingBuilder language="JAVA"
                              implementationClass="com.github.brendio.smartfold.fold.JavaFoldingBuilder"/>
     </extensions>
